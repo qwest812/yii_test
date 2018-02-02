@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\AddComments;
 use app\models\Comments;
 use app\models\ContactForm;
 use app\models\LoginForm;
@@ -9,6 +10,7 @@ use app\models\MyForm;
 use app\models\MyForm2;
 
 use Yii;
+use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Html;
@@ -195,6 +197,32 @@ class SiteController extends Controller
         $comments= Comments::find()->all();
         return $this->render('comments',
             ['comments'=>$comments]
+        );
+    }
+    public function actionPagination(){
+        $comments =Comments::find();
+
+
+        $pagination =new Pagination([
+            'defaultPageSize'=>2,
+            'totalCount'=>$comments->count(),
+        ]);
+
+        $comments=$comments->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        return $this->render('pagination',
+            ['pagination'=>$pagination,
+               'comments'=>$comments,
+            ]);
+    }
+
+
+    public function actionCommentsAdd(){
+        $model =new AddComments();
+
+        return $this->render('addComments',
+            ['model'=>$model]
         );
     }
 
